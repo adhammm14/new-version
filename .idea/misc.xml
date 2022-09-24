@@ -11,6 +11,7 @@
         <entry key="app/src/main/res/drawable/search_corners.xml" value="0.1095" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_movie_details.xml" value="0.24976959228515622" />
+        <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.23802083333333332" />
         <entry key="app/src/main/res/layout/fragment_favourite.xml" value="0.20277777777777778" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.20277777777777778" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.25" />
