@@ -2,12 +2,20 @@ package com.example.moviesapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import kotlinx.android.synthetic.main.activity_movie_details.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MovieDetails : AppCompatActivity() {
     private lateinit var backdrop: ImageView
@@ -51,5 +59,39 @@ class MovieDetails : AppCompatActivity() {
         rating.rating = movieDetails.rate!!
         releaseDate.text = movieDetails.release
         overview.text = movieDetails.overview
+
+        recyclerViewSecond.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        val apiService = APIRetrofit.getInstance().create(APIServices::class.java)
+        movieDetails.id?.let {
+            apiService.getSimilarMovies(id = it)
+                .enqueue(object : Callback<MovieResponse> {
+                    override fun onResponse(
+                        call: Call<MovieResponse>,
+                        response: Response<MovieResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            recyclerViewSecond.adapter =
+                                response.body()?.movies?.let { it ->
+                                    MovieAdapter(
+                                        it as MutableList<Movie>,
+                                        onMovieClick = { movie -> showMovieDetails(movie) })
+                                }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                        val error = t.message
+                        println(error)
+                    }
+                })
+        }
     }
+
+    fun showMovieDetails(movie: Movie) {
+        val intent = Intent(this, MovieDetails::class.java)
+        intent.putExtra("MOVIE", movie)
+        startActivity(intent)
     }
+}

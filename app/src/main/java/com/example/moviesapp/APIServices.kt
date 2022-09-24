@@ -16,4 +16,11 @@ interface APIServices {
         @Query("page")
         page: Int,
     ): Call<MovieResponse>
+
+    @GET("movie/{movie_id}/similar")
+    fun getSimilarMovies(
+        @Path("movie_id")id:Int,
+        @Query("api_key")
+        api_key: String = API_KEY,
+    ): Call<MovieResponse>
 }

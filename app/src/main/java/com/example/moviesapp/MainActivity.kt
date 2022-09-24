@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -28,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         adapter = MovieAdapter(mutableListOf()) { movie -> showMovieDetails(movie) }
 
         navigationBar = findViewById(R.id.bottom_bar)
+        val fragmentController = findNavController(R.id.fragmentContainerView)
+        navigationBar.setupWithNavController(fragmentController)
+
 
         getMovieData()
     }
@@ -44,7 +49,11 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         progressBar.visibility = View.GONE
                         recyclerView.adapter =
-                            response.body()?.movies?.let { MovieAdapter(it as MutableList<Movie>, onMovieClick = {movie ->showMovieDetails(movie)  }) }
+                            response.body()?.movies?.let {
+                                MovieAdapter(
+                                    it as MutableList<Movie>,
+                                    onMovieClick = { movie -> showMovieDetails(movie) })
+                            }
                     }
                 }
 
@@ -54,6 +63,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
     }
+
     private fun showMovieDetails(movie: Movie) {
         val intent = Intent(this, MovieDetails::class.java)
         intent.putExtra("MOVIE", movie)
